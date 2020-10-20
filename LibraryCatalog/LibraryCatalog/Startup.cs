@@ -1,3 +1,4 @@
+using AutoMapper;
 using LibraryCatalog.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +23,8 @@ namespace LibraryCatalog
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<LibraryCatalogDbContext>(options => options.UseSqlite(_connectionString));
+
+            services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddControllers();
         }
