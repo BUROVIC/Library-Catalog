@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LibraryCatalog.Data.Entities
 {
@@ -11,6 +12,8 @@ namespace LibraryCatalog.Data.Entities
         public string Description { get; set; }
 
         public IEnumerable<Author> Authors { get; set; }
+        
+        public IEnumerable<Review> Reviews { get; set; }
 
         public Publisher Publisher { get; set; }
     }
