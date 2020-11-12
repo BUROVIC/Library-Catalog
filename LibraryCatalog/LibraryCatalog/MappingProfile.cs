@@ -38,6 +38,7 @@ namespace LibraryCatalog
                         publisher => publisher.Publications.Select(publication => publication.Id)
                     )
                 );
+            CreateMap<Publisher, PublisherBriefDto>();
 
             CreateMap<Review, ReviewDto>()
                 .ForMember(

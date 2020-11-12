@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using LibraryCatalog.Data;
@@ -25,17 +23,6 @@ namespace LibraryCatalog.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{publicationId}")]
-        public async Task<IEnumerable<ReviewDto>> GetAllAsync(
-            int publicationId,
-            CancellationToken cancellationToken = default)
-        {
-            var reviews = (await _dataContext.Publications.Include(publication => publication.Authors)
-                .SingleAsync(publication => publication.Id == publicationId, cancellationToken)).Reviews;
-
-            return reviews.Select(review => _mapper.Map<ReviewDto>(review));
-        }
-
         [HttpPost]
         public async Task PostAsync(ReviewDto reviewDto, CancellationToken cancellationToken = default)
         {
@@ -51,6 +38,14 @@ namespace LibraryCatalog.Controllers
 
             await _dataContext.Reviews.AddAsync(review, cancellationToken);
             await _dataContext.SaveChangesAsync(cancellationToken);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ReviewDto> GetAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return _mapper.Map<ReviewDto>(
+                await _dataContext.Reviews.SingleAsync(review => review.Id == id, cancellationToken)
+            );
         }
 
         [HttpPut("{id}")]

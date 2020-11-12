@@ -25,13 +25,12 @@ namespace LibraryCatalog.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{publicationId}")]
-        public async Task<PublisherDto> GetAllAsync(int publicationId, CancellationToken cancellationToken = default)
+        [HttpGet]
+        public async Task<IEnumerable<PublicationBriefDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return _mapper.Map<PublisherDto>(
-                (await _dataContext.Publications.Include(publication => publication.Authors)
-                    .SingleAsync(publication => publication.Id == publicationId, cancellationToken)).Authors
-            );
+            var publishers = await _dataContext.Authors.ToListAsync(cancellationToken);
+
+            return publishers.Select(publisher => _mapper.Map<PublicationBriefDto>(publisher));
         }
 
         [HttpPost]
