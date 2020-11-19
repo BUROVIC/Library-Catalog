@@ -26,11 +26,11 @@ namespace LibraryCatalog.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<PublicationBriefDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<PublisherBriefDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var publishers = await _dataContext.Authors.ToListAsync(cancellationToken);
+            var publishers = await _dataContext.Publishers.ToListAsync(cancellationToken);
 
-            return publishers.Select(publisher => _mapper.Map<PublicationBriefDto>(publisher));
+            return publishers.Select(publisher => _mapper.Map<PublisherBriefDto>(publisher));
         }
 
         [HttpPost]
@@ -40,13 +40,13 @@ namespace LibraryCatalog.Controllers
             {
                 Name = publisherDto.Name,
                 Email = publisherDto.Email,
-                Publications = await Task.WhenAll(
+                Publications = (await Task.WhenAll(
                     publisherDto.PublicationsIds.Select(async publicationId =>
                         await _dataContext.Publications.SingleAsync(
                             publication => publication.Id == publicationId, cancellationToken
                         )
                     )
-                )
+                )).ToList()
             };
 
             await _dataContext.Publishers.AddAsync(publisher, cancellationToken);
@@ -57,7 +57,9 @@ namespace LibraryCatalog.Controllers
         public async Task<PublisherDto> GetAsync(int id, CancellationToken cancellationToken = default)
         {
             return _mapper.Map<PublisherDto>(
-                await _dataContext.Publishers.SingleAsync(publisher => publisher.Id == id, cancellationToken)
+                await _dataContext.Publishers
+                    .Include(publisher => publisher.Publications)
+                    .SingleAsync(publisher => publisher.Id == id, cancellationToken)
             );
         }
 
@@ -65,17 +67,19 @@ namespace LibraryCatalog.Controllers
         public async Task PutAsync(int id, PublisherDto publisherDto, CancellationToken cancellationToken = default)
         {
             var publisherToUpdate =
-                await _dataContext.Publishers.SingleAsync(publisher => publisher.Id == id, cancellationToken);
+                await _dataContext.Publishers
+                    .Include(publisher => publisher.Publications)
+                    .SingleAsync(publisher => publisher.Id == id, cancellationToken);
 
             publisherToUpdate.Name = publisherDto.Name;
             publisherToUpdate.Email = publisherDto.Email;
-            publisherToUpdate.Publications = await Task.WhenAll(
+            publisherToUpdate.Publications = (await Task.WhenAll(
                 publisherDto.PublicationsIds.Select(async publicationId =>
                     await _dataContext.Publications.SingleAsync(
                         publication => publication.Id == publicationId, cancellationToken
                     )
                 )
-            );
+            )).ToList();
 
             await _dataContext.SaveChangesAsync(cancellationToken);
         }

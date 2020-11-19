@@ -12,6 +12,6 @@ namespace LibraryCatalog.Models
         
         public IEnumerable<int> ReviewsIds { get; set; }
 
-        public int PublisherId { get; set; }
+        public int? PublisherId { get; set; }
     }
 }

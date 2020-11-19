@@ -45,6 +45,7 @@ namespace LibraryCatalog
                     dto => dto.PublicationId,
                     memberConfiguration => memberConfiguration.MapFrom(review => review.Publication.Id)
                 );
+            CreateMap<Review, ReviewBriefDto>();
         }
     }
 }

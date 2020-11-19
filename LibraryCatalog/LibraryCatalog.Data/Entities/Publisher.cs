@@ -10,6 +10,6 @@ namespace LibraryCatalog.Data.Entities
 
         public string Email { get; set; }
 
-        public IEnumerable<Publication> Publications { get; set; }
+        public List<Publication> Publications { get; set; }
     }
 }

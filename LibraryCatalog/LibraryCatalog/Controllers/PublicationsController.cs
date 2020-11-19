@@ -40,19 +40,21 @@ namespace LibraryCatalog.Controllers
             {
                 Title = publicationDto.Title,
                 Description = publicationDto.Description,
-                Authors = await Task.WhenAll(
+                Authors = (await Task.WhenAll(
                     publicationDto.AuthorsIds.Select(async authorId =>
                         await _dataContext.Authors.SingleAsync(author => author.Id == authorId, cancellationToken)
                     )
-                ),
-                Reviews = await Task.WhenAll(
+                )).ToList(),
+                Reviews = (await Task.WhenAll(
                     publicationDto.ReviewsIds.Select(async reviewId =>
                         await _dataContext.Reviews.SingleAsync(review => review.Id == reviewId, cancellationToken)
                     )
-                ),
-                Publisher = await _dataContext.Publishers.SingleAsync(publisher =>
-                        publisher.Id == publicationDto.PublisherId, cancellationToken
-                )
+                )).ToList(),
+                Publisher = publicationDto.PublisherId != null
+                    ? await _dataContext.Publishers.SingleAsync(publisher =>
+                            publisher.Id == publicationDto.PublisherId, cancellationToken
+                    )
+                    : null
             };
 
             await _dataContext.Publications.AddAsync(publication, cancellationToken);
@@ -63,31 +65,40 @@ namespace LibraryCatalog.Controllers
         public async Task<PublicationDto> GetAsync(int id, CancellationToken cancellationToken = default)
         {
             return _mapper.Map<PublicationDto>(
-                await _dataContext.Publications.SingleAsync(publication => publication.Id == id, cancellationToken)
+                await _dataContext.Publications
+                    .Include(publication => publication.Authors)
+                    .Include(publication => publication.Reviews)
+                    .Include(publication => publication.Publisher)
+                    .SingleAsync(publication => publication.Id == id, cancellationToken)
             );
         }
 
         [HttpPut("{id}")]
         public async Task PutAsync(int id, PublicationDto publicationDto, CancellationToken cancellationToken = default)
         {
-            var publicationToUpdate =
-                await _dataContext.Publications.SingleAsync(publication => publication.Id == id, cancellationToken);
+            var publicationToUpdate = await _dataContext.Publications
+                .Include(publication => publication.Authors)
+                .Include(publication => publication.Reviews)
+                .Include(publication => publication.Publisher)
+                .SingleAsync(publication => publication.Id == id, cancellationToken);
 
             publicationToUpdate.Title = publicationDto.Title;
             publicationToUpdate.Description = publicationDto.Description;
-            publicationToUpdate.Authors = await Task.WhenAll(
+            publicationToUpdate.Authors = (await Task.WhenAll(
                 publicationDto.AuthorsIds.Select(async authorId =>
                     await _dataContext.Authors.SingleAsync(author => author.Id == authorId, cancellationToken)
                 )
-            );
-            publicationToUpdate.Reviews = await Task.WhenAll(
+            )).ToList();
+            publicationToUpdate.Reviews = (await Task.WhenAll(
                 publicationDto.ReviewsIds.Select(async reviewId =>
                     await _dataContext.Reviews.SingleAsync(review => review.Id == reviewId, cancellationToken)
                 )
-            );
-            publicationToUpdate.Publisher = await _dataContext.Publishers.SingleAsync(publisher =>
-                    publisher.Id == publicationDto.PublisherId, cancellationToken
-            );
+            )).ToList();
+            publicationToUpdate.Publisher = publicationDto.PublisherId != null
+                ? await _dataContext.Publishers.SingleAsync(publisher =>
+                        publisher.Id == publicationDto.PublisherId, cancellationToken
+                )
+                : null;
 
             await _dataContext.SaveChangesAsync(cancellationToken);
         }

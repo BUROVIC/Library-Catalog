@@ -49,6 +49,7 @@ namespace LibraryCatalog
 
             dataContext.Database.EnsureCreated();
 
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseRouting();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
