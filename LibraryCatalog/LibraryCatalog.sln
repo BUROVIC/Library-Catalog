@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCatalog", "LibraryCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCatalog.Data", "LibraryCatalog.Data\LibraryCatalog.Data.csproj", "{D2551FA9-60C5-444E-B808-E4E0AF5F7C1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryCatalog.Tests", "LibraryCatalog.Tests\LibraryCatalog.Tests.csproj", "{D290D798-6901-459A-A4B0-8096116BC5B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{D2551FA9-60C5-444E-B808-E4E0AF5F7C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2551FA9-60C5-444E-B808-E4E0AF5F7C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2551FA9-60C5-444E-B808-E4E0AF5F7C1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D290D798-6901-459A-A4B0-8096116BC5B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D290D798-6901-459A-A4B0-8096116BC5B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D290D798-6901-459A-A4B0-8096116BC5B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D290D798-6901-459A-A4B0-8096116BC5B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
