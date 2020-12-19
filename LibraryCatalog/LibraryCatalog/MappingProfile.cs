@@ -5,47 +5,47 @@ using LibraryCatalog.Models;
 
 namespace LibraryCatalog
 {
-    public class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<Author, AuthorDto>();
-            CreateMap<Author, AuthorBriefDto>();
+	public class MappingProfile : Profile
+	{
+		public MappingProfile()
+		{
+			CreateMap<Author, AuthorDto>();
+			CreateMap<Author, AuthorBriefDto>();
 
-            CreateMap<Publication, PublicationBriefDto>();
-            CreateMap<Publication, PublicationDto>()
-                .ForMember(
-                    dto => dto.AuthorsIds,
-                    memberConfiguration => memberConfiguration.MapFrom(
-                        publication => publication.Authors.Select(author => author.Id)
-                    )
-                )
-                .ForMember(
-                    dto => dto.ReviewsIds,
-                    memberConfiguration => memberConfiguration.MapFrom(publication =>
-                        publication.Reviews.Select(review => review.Id)
-                    )
-                )
-                .ForMember(
-                    dto => dto.PublisherId,
-                    memberConfiguration => memberConfiguration.MapFrom(publication => publication.Publisher.Id)
-                );
+			CreateMap<Publication, PublicationBriefDto>();
+			CreateMap<Publication, PublicationDto>()
+				.ForMember(
+					dto => dto.AuthorsIds,
+					memberConfiguration => memberConfiguration.MapFrom(
+						publication => publication.Authors.Select(author => author.Id)
+					)
+				)
+				.ForMember(
+					dto => dto.ReviewsIds,
+					memberConfiguration => memberConfiguration.MapFrom(publication =>
+						publication.Reviews.Select(review => review.Id)
+					)
+				)
+				.ForMember(
+					dto => dto.PublisherId,
+					memberConfiguration => memberConfiguration.MapFrom(publication => publication.Publisher.Id)
+				);
 
-            CreateMap<Publisher, PublisherDto>()
-                .ForMember(
-                    dto => dto.PublicationsIds,
-                    memberConfiguration => memberConfiguration.MapFrom(
-                        publisher => publisher.Publications.Select(publication => publication.Id)
-                    )
-                );
-            CreateMap<Publisher, PublisherBriefDto>();
+			CreateMap<Publisher, PublisherDto>()
+				.ForMember(
+					dto => dto.PublicationsIds,
+					memberConfiguration => memberConfiguration.MapFrom(
+						publisher => publisher.Publications.Select(publication => publication.Id)
+					)
+				);
+			CreateMap<Publisher, PublisherBriefDto>();
 
-            CreateMap<Review, ReviewDto>()
-                .ForMember(
-                    dto => dto.PublicationId,
-                    memberConfiguration => memberConfiguration.MapFrom(review => review.Publication.Id)
-                );
-            CreateMap<Review, ReviewBriefDto>();
-        }
-    }
+			CreateMap<Review, ReviewDto>()
+				.ForMember(
+					dto => dto.PublicationId,
+					memberConfiguration => memberConfiguration.MapFrom(review => review.Publication.Id)
+				);
+			CreateMap<Review, ReviewBriefDto>();
+		}
+	}
 }
